@@ -67,3 +67,19 @@ if __name__ == "__main__":
     for n in range(1, 11):
         result = gauss_2(a, b, n)
         print (f"n={n}, hasil = {result}")
+
+    print()
+
+    #Without numpy library
+    f = lambda x: math.cos(x)
+    g = lambda x: pow(x, 2)
+
+    print("Function 1: ")
+    for i in range (1, 5):
+        print (f"n={i}, hasil = {gauss(f, 0, PI/2, i)}")
+
+    print()
+
+    print("Function 2: ")
+    for i in range (1, 5):
+        print (f"n={i}, hasil = {gauss(g, 0, 1, i)}")
