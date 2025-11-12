@@ -76,6 +76,7 @@ Kita akan mengevaluasi setiap metode berdasarkan pengertian, rumus, implementasi
 
 \newpage
 % ======================================================
+% PERBAIKAN 1: Menggunakan \& sebagai ganti &
 \section{Metode 1: Aturan Trapesium \& Ekstrapolasi Richardson}
 
 \subsection{Pengertian dan Rumus}
@@ -339,15 +340,18 @@ if __name__ == "__main__":
 Output dari kode di atas (dengan \texttt{tol = 1e-10}):
 
 \textbf{Hasil untuk $\int_0^{\pi/2} \cos(x) \, dx$:}
-\begin{verbatim}
-Aproximation first integral: 1.0
-Estimated local error: 1.2555232757237035e-15
-\end{verbatim}
+
+\begin{lstlisting}[language={}, caption={}, numbers=none]
+Aproximation first integral: 0.9999999999999999
+Estimated local error: 2.669869663893265e-11
+\end{lstlisting}
+
 \textbf{Hasil untuk $\int_0^1 x^2 \, dx$:}
-\begin{verbatim}
+
+\begin{lstlisting}[language={}, caption={}, numbers=none]
 Aproximation first integral: 0.3333333333333333
 Estimated local error: 0.0
-\end{verbatim}
+\end{lstlisting}
 
 \textbf{Analisis:}
 \begin{itemize}
@@ -451,7 +455,8 @@ Kuadratur Gauss $n=1$ eksak untuk polinomial derajat $\le 2(1)-1 = 1$. Karena $x
 
 Mari kita rangkum perkiraan terbaik dari setiap metode untuk kedua fungsi dalam tabel perbandingan.
 
-\subsubsection{Perbandingan untuk $\int_0^{\pi/2} \cos(x) \, dx$ (Sejati: 1.0)}
+% PERBAIKAN 2: Mengganti \subsubsection menjadi \subsection untuk hierarki yang benar
+\subsection{Perbandingan untuk $\int_0^{\pi/2} \cos(x) \, dx$ (Sejati: 1.0)}
 \begin{table}[H]
 \centering
 \begin{tabular}{l l l l}
@@ -460,14 +465,14 @@ Metode & Perkiraan Terbaik & Error Absolut & Catatan \\
 \midrule
 Trapesium & 0.987116 & $\approx 1.29 \times 10^{-2}$ & $m=4$ interval ($R(2,0)$) \\
 Romberg & 0.999992 & $\approx 8.0 \times 10^{-6}$ & $R(2,2)$, (basis $m=4$) \\
-Adaptif & 1.000000... & $\approx 1.26 \times 10^{-15}$ & (Estimasi error oleh kode) \\
+Adaptif & 0.999999... & $\approx 2.67 \times 10^{-11}$ & (Estimasi error oleh kode) \\
 Gauss & 1.000000... & $\approx 2.22 \times 10^{-16}$ & $n=4$ titik (Presisi mesin) \\
 \bottomrule
 \end{tabular}
-\end{caption}
 \end{table}
 
-\subsubsection{Perbandingan untuk $\int_0^1 x^2 \, dx$ (Sejati: 1/3)}
+% PERBAIKAN 3: Mengganti \subsubsection menjadi \subsection untuk hierarki yang benar
+\subsection{Perbandingan untuk $\int_0^1 x^2 \, dx$ (Sejati: 1/3)}
 \begin{table}[H]
 \centering
 \begin{tabular}{l l l l}
@@ -480,7 +485,6 @@ Adaptif & \textbf{0.333333...} & \textbf{0.0} & Eksak (basis Simpson) \\
 Gauss & \textbf{0.333333...} & \textbf{0.0} & Eksak pada $n=2$ titik \\
 \bottomrule
 \end{tabular}
-\end{caption}
 \end{table}
 
 \subsection{Metode dengan Error Terkecil}
