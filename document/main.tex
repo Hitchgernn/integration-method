@@ -1,4 +1,4 @@
-% --- PREAMBLE GABUNGAN (dari main.tex dan cover.tex) ---
+
 \documentclass[a4paper, 11pt]{article} % Diambil dari main.tex 
 
 % --- Paket-paket dari main.tex ---
@@ -61,7 +61,7 @@
 \begin{center} % 
 
 % --- Judul Utama ---
-{\Large \textbf{PROYEK METODE NUMERIS}} 
+{\Large \textbf{PROYEK METODE NUMERIS}}\\[0.5cm] % <-- [PERUBAHAN 1: Menambahkan spasi 0.5cm]
 
 {\large \textbf{NUMERICAL INTEGRATION DENGAN METODE EXTRAPOLATION, ROMBERG INTEGRATION, ADAPTIVE INTEGRATION, DAN GAUSSIAN QUADRATURE}}\\[2cm] % 
 
@@ -71,12 +71,16 @@
 % --- Disusun oleh ---
 {\large \textbf{Disusun oleh:}}\\[0.5cm] % 
 
+% --- [PERUBAHAN 2: Menggunakan tabular untuk merapikan nama, NIM, dan nomor] ---
 {\normalsize % 
-Adnan Abdul Majid\\ % 
-Muhammad Ilkham Abdillah\\ % 
-Rafif Raihan Bahrul Alam\\ % 
-Rakan Hendian Ramadhan % 
+\begin{tabular}{l l}
+1. Adnan Abdul Majid & (24/544058/TK/60471) \\
+2. Muhammad Ilkham Abdillah & (24/537977/TK/59653) \\
+3. Rafif Raihan Bahrul Alam & (24/534432/TK/59237) \\
+4. Rakan Hendian Ramadhan & (24/540158/TK/59909)
+\end{tabular}
 }\\[5cm] % 
+% --- [AKHIR PERUBAHAN 2] ---
 
 % --- Institusi ---
 {\large \textbf{Departemen Teknik Elektro dan Teknologi Informasi}}\\[0.3cm] % 
@@ -89,7 +93,8 @@ Rakan Hendian Ramadhan %
 
 % --- KONTEN UTAMA (dari main.tex) ---
 
-% \maketitle (DIHILANGKAN, diganti dengan cover.tex) 
+\pagestyle{plain}
+\setcounter{page}{1}
 
 \tableofcontents % 
 \newpage % 
@@ -129,8 +134,7 @@ Untuk Aturan Trapesium, yang memiliki error $O(h^2)$, rumusnya adalah: %
 \[ I_{\text{estimasi}} \approx I(h/2) + \frac{I(h/2) - I(h)}{2^2 - 1} = \frac{4 I(h/2) - I(h)}{3} \] % 
 Hasil dari ekstrapolasi ini setara dengan Aturan Simpson. % 
 \subsection{Implementasi Kode} % 
-Kode berikut (dari \texttt{trapezoidal.py}) mengimplementasikan Aturan Trapesium Komposit untuk kedua fungsi. % 
-\textit{(Catatan: Fungsi \texttt{f\_1} dan \texttt{f\_2} di sini secara spesifik mengasumsikan $a=0$ dan menggunakan \texttt{i} sebagai pengganti \texttt{x}).} % 
+Kode berikut (dari \texttt{trapezoidal.py}) mengimplementasikan Aturan Trapesium Komposit untuk kedua fungsi. %  
 
 \begin{lstlisting}[language=Python, caption={Fungsi trapezoidal.py}, label=list:trap] % 
 import math
@@ -157,7 +161,7 @@ def trapezoidal_2(n):
     return sum * h/2
 \end{lstlisting}  
 
-Kode berikut (dari \texttt{extrapolation.py}) mengimplementasikan Ekstrapolasi Richardson, yang menggunakan fungsi-fungsi dari \texttt{Trapezoidal.py}. Parameter \texttt{p} adalah orde dari error (untuk Trapesium, $p=2$) dan \texttt{n} adalah jumlah interval awal. % 
+Kode berikut (dari \texttt{extrapolation.py}) mengimplementasikan Ekstrapolasi Richardson, yang menggunakan fungsi-fungsi dari \texttt{Trapezoidal.py}. Parameter $p$ adalah orde dari error (untuk Trapesium, $p=2$) dan $n$ adalah jumlah interval awal. % 
 
 \begin{lstlisting}[language=Python, caption={Fungsi extrapolation.py}, label=list:extrap]
 from trapezoidal import *
@@ -188,7 +192,30 @@ $m$ (Interval) & Hasil Trapesium & Error Absolut & Hasil Trapesium & Error Absol
 \end{tabular} % 
 \end{table} % 
 
-\textbf{Analisis:} Error dari Aturan Trapesium cukup besar, tetapi berkurang sekitar faktor 4 setiap kali jumlah interval dikalikan dua (sesuai dengan $O(h^2)$). % 
+\textbf{Analisis (Aturan Trapesium):} Error dari Aturan Trapesium cukup besar, tetapi berkurang sekitar faktor 4 setiap kali jumlah interval dikalikan dua (sesuai dengan $O(h^2)$). % 
+
+% --- [BLOK TAMBAHAN UNTUK RICHARDSON] ---
+\begin{table}[H] 
+\centering 
+\caption{Hasil dan Error Ekstrapolasi Richardson ($p=2$)} 
+\begin{tabular}{l c c c c} 
+\toprule 
+ & \multicolumn{2}{c}{$\int_0^{\pi/2} \cos(x) \, dx$ (Sejati: 1.0)} & \multicolumn{2}{c}{$\int_0^1 x^2 \, dx$ (Sejati: 1/3)} \\ 
+$n$ (Basis) & Hasil Ekstrapolasi & Error Absolut & Hasil Ekstrapolasi & Error Absolut \\ 
+\midrule 
+$n=1$ ($T_1, T_2$) & 1.002279 & $2.28 \times 10^{-3}$ & 0.333333... & 0.0 \\ 
+$n=2$ ($T_2, T_4$) & 1.000135 & $1.35 \times 10^{-4}$ & 0.333333... & 0.0 \\ 
+\bottomrule 
+\end{tabular} 
+\end{table} 
+
+\textbf{Analisis (Ekstrapolasi Richardson):} Dengan menerapkan Ekstrapolasi Richardson (setara dengan nilai $R(1,1)$ dan $R(2,1)$ dari tabel Romberg), akurasi meningkat secara drastis dibandingkan Trapesium murni.
+\begin{itemize}
+    \item \textbf{$\cos(x)$:} Error berkurang dari $1.29 \times 10^{-2}$ (Trapesium $m=4$) menjadi $1.35 \times 10^{-4}$ (Ekstrapolasi $n=2$). Ini adalah peningkatan akurasi yang signifikan hanya dengan menggabungkan hasil yang sudah ada.
+    \item \textbf{$x^2$:} Metode ini langsung memberikan hasil \textbf{eksak} (Error = 0). Ini karena ekstrapolasi orde pertama pada Aturan Trapesium ($p=2$) secara matematis identik dengan Aturan Simpson, yang diketahui eksak untuk polinomial derajat $\le 3$.
+\end{itemize}
+% --- [AKHIR BLOK TAMBAHAN] ---
+
 \newpage % 
 % ======================================================
 \section{Metode 2: Integrasi Romberg} % 
@@ -234,7 +261,7 @@ $i$ & $j=0$ (Trapesium) & $j=1$ (Simpson) & $j=2$ (Boole) \\ %
 \midrule % 
 0 & 0.785398 & & \\ % 
 1 & 0.948059 & 1.002279 & \\ % 
-2 & 0.987116 & 1.000135 & \textbf{0.999992} \\ % 
+2 & 0.987116 & 1.000135 & 0.999992 \\ %  <-- BOLD REMOVED
 \bottomrule % 
 \end{tabular} % 
 \end{table} % 
@@ -248,7 +275,7 @@ $i$ & $j=0$ (Trapesium) & $j=1$ (Simpson) & $j=2$ (Boole) \\ %
 \midrule % 
 0 & 0.500000 & & \\ % 
 1 & 0.375000 & 0.333333... & \\ % 
-2 & 0.343750 & 0.333333... & \textbf{0.333333...} \\ % 
+2 & 0.343750 & 0.333333... & 0.333333... \\ % <-- BOLD REMOVED
 \bottomrule % 
 \end{tabular} % 
 \end{table} % 
@@ -340,7 +367,7 @@ def qstep_2(a, b, tol, fa, fc, fb):
 \end{lstlisting} 
 
 \subsection{Hasil Perhitungan dan Analisis Error} % 
-Output dari kode di atas (dengan \texttt{tol = 1e-10}): % 
+Output dari kode di atas (dengan $\text{tol} = 10^{-10}$): % 
 
 \textbf{Hasil untuk $\int_0^{\pi/2} \cos(x) \, dx$:} % 
 
@@ -384,21 +411,39 @@ Untuk mengubah interval $[a, b]$ ke $[-1, 1]$, kita gunakan transformasi: %
 
 \subsection{Implementasi Kode} % 
 Kode berikut (dari \texttt{gauss\_1.py} dan \texttt{gauss\_2.py}) mengimplementasikan Kuadratur Gauss menggunakan \texttt{numpy} untuk mendapatkan nilai $x_i$ dan $w_i$. % 
-\begin{lstlisting}[language=Python, caption={Fungsi gauss.py}, label=list:gauss1] 
-import numpy as np
-import math
-pi = math.pi
 
-def gauss_1(a, b, n):
-    x, w = np.polynomial.legendre.leggauss(n)
-    t = (x+1)*(b-a)/2 + a
-    return (b-a)*np.sum(w*np.cos(t))/2
+% --- [MODIFIKASI GAUSS CODE BLOCKS: VERTICAL] ---
+\begin{figure}[H]
+    \centering % Opsional: untuk menengahkan blok kode
+    
+    % --- Kode Pertama ---
+    \begin{lstlisting}[language=Python, caption={Fungsi gauss.py (untuk $\cos(x)$)}, label=list:gauss1] 
+    import numpy as np
+    import math
+    pi = math.pi
 
-def gauss_2(a, b, n):
-    x, w = np.polynomial.legendre.leggauss(n)
-    t = (x+1)*(b-a)/2 + a
-    return (b-a)*np.sum(w*(t**2))/2
-\end{lstlisting} 
+    def gauss_1(a, b, n):
+        x, w = np.polynomial.legendre.leggauss(n)
+        t = (x+1)*(b-a)/2 + a
+        return (b-a)*np.sum(w*np.cos(t))/2
+    \end{lstlisting} 
+    
+    \vspace{1em} % Memberi sedikit jarak vertikal antar blok kode
+
+    % --- Kode Kedua ---
+    \begin{lstlisting}[language=Python, caption={Fungsi gauss.py (untuk $x^2$)}, label=list:gauss2]
+    import numpy as np
+    
+    def gauss_2(a, b, n):
+        x, w = np.polynomial.legendre.leggauss(n)
+        t = (x+1)*(b-a)/2 + a
+        return (b-a)*np.sum(w*(t**2))/2
+    \end{lstlisting} 
+    
+    % --- Caption Utama ---
+    \caption{Implementasi Kuadratur Gauss}
+\end{figure}
+% --- [AKHIR MODIFIKASI GAUSS] ---
 
 
 \subsection{Hasil Perhitungan dan Analisis Error} % 
@@ -412,26 +457,21 @@ Output dari kode di atas untuk $n=1$ sampai $n=5$ titik: %
  & \multicolumn{2}{c}{$\int_0^{\pi/2} \cos(x) \, dx$ (Sejati: 1.0)} & \multicolumn{2}{c}{$\int_0^1 x^2 \, dx$ (Sejati: 1/3)} \\ % 
 $n$ (Titik) & Hasil Gauss & Error Absolut & Hasil Gauss & Error Absolut \\ % 
 \midrule % 
-1 & 0.998475 & 1.52e-03 & 0.333333... & \textbf{0.0} (salah, $n=1$) \\ % 
-2 & 1.000003 & 3.00e-06 & \textbf{0.333333...} & \textbf{0.0} \\ % 
-3 & 0.9999999996 & 3.31e-10 & 0.333333... & 0.0 \\ % 
+% --- [PERBAIKAN TABEL GAUSS] ---
+1 & 0.998475 & $1.52 \times 10^{-3}$ & 0.250000 & $\approx 8.33 \times 10^{-2}$ \\ % 
+2 & 1.000003 & $3.00 \times 10^{-6}$ & 0.333333... & 0.0 \\ % 
+3 & 0.9999999996 & $3.31 \times 10^{-10}$ & 0.333333... & 0.0 \\ % 
 4 & 1.0000000000 % 
 & $\approx 0.0$ & 0.333333... & 0.0 \\ % 
 \bottomrule % 
 \end{tabular} % 
 \end{table} % 
-\textit{Catatan: Hasil $n=1$ untuk $x^2$ seharusnya 0.25 (menggunakan $x_1=0.5$), tetapi $n=2$ sudah eksak. % 
-Mari kita perbaiki tabel di atas berdasarkan teori.} % 
-Kuadratur Gauss $n=2$ eksak untuk polinomial derajat $\le 2(2)-1 = 3$. % 
-Karena $x^2$ adalah derajat 2, $n=2$ \textbf{pasti eksak}. % 
-Kuadratur Gauss $n=1$ eksak untuk polinomial derajat $\le 2(1)-1 = 1$. % 
-Karena $x^2$ adalah derajat 2, $n=1$ tidak eksak. Hasil $n=1$ (1 titik di tengah) adalah $1.0 \times (0.5)^2 = 0.25$. % 
-Kode di atas menunjukkan 0.333... untuk $n=1$, yang mungkin artefak dari \texttt{leggauss(1)}. Mari kita percaya pada hasil $n=2$. % 
+% --- [CATATAN GAUSS DIHAPUS] ---
 \textbf{Analisis:} % 
 \begin{itemize}
     \item \textbf{$\cos(x)$:} Konvergensi sangat cepat. Hanya dengan $n=3$ titik, error sudah $\approx 10^{-10}$. % 
     Dengan $n=4$ titik, hasilnya sudah akurat hingga presisi mesin. % 
-    \item \textbf{$x^2$:} Metode ini memberikan hasil \textbf{eksak} $1/3$ (Error = 0) hanya dengan $n=2$ titik, sesuai dengan teorinya ($2n-1 = 3$). % 
+    \item \textbf{$x^2$:} Kuadratur Gauss $n=1$ (setara Aturan Titik Tengah) memberikan hasil $0.25$. Metode ini memberikan hasil \textbf{eksak} $1/3$ (Error = 0) dimulai dari $n=2$ titik, sesuai dengan teorinya ($2n-1 = 3$). % 
 \end{itemize}
 
 \newpage % 
@@ -441,6 +481,8 @@ Kode di atas menunjukkan 0.333... untuk $n=1$, yang mungkin artefak dari \texttt
 Mari kita rangkum perkiraan terbaik dari setiap metode untuk kedua fungsi dalam tabel perbandingan. % 
 % PERBAIKAN 2: Mengganti \subsubsection menjadi \subsection untuk hierarki yang benar
 \subsection{Perbandingan untuk $\int_0^{\pi/2} \cos(x) \, dx$ (Sejati: 1.0)} % 
+
+% --- [MODIFIKASI TABEL KESIMPULAN 1 DENGAN RICHARDSON, BOLD DIHAPUS] ---
 \begin{table}[H] % 
 \centering % 
 \begin{tabular}{l l l l} % 
@@ -448,15 +490,19 @@ Mari kita rangkum perkiraan terbaik dari setiap metode untuk kedua fungsi dalam 
 Metode & Perkiraan Terbaik & Error Absolut & Catatan \\ % 
 \midrule % 
 Trapesium & 0.987116 & $\approx 1.29 \times 10^{-2}$ & $m=4$ interval ($R(2,0)$) \\ % 
+Ekstrapolasi & 1.000135 & $\approx 1.35 \times 10^{-4}$ & Basis $m=2$ \& $m=4$ ($R(2,1)$) \\ % 
 Romberg & 0.999992 & $\approx 8.0 \times 10^{-6}$ & $R(2,2)$, (basis $m=4$) \\ % 
 Adaptif & 0.999999... & $\approx 2.67 \times 10^{-11}$ & (Estimasi error oleh kode) \\ % 
 Gauss & 1.000000... & $\approx 2.22 \times 10^{-16}$ & $n=4$ titik (Presisi mesin) \\ % 
 \bottomrule % 
 \end{tabular} % 
 \end{table} % 
+% --- [AKHIR MODIFIKASI] ---
 
 % PERBAIKAN 3: Mengganti \subsubsection menjadi \subsection untuk hierarki yang benar
 \subsection{Perbandingan untuk $\int_0^1 x^2 \, dx$ (Sejati: 1/3)} % 
+
+% --- [MODIFIKASI TABEL KESIMPULAN 2 DENGAN RICHARDSON, BOLD DIHAPUS] ---
 \begin{table}[H] % 
 \centering % 
 \begin{tabular}{l l l l} % 
@@ -465,23 +511,29 @@ Metode %
 & Perkiraan Terbaik & Error Absolut & Catatan \\ % 
 \midrule % 
 Trapesium & 0.343750 & $\approx 1.04 \times 10^{-2}$ & $m=4$ interval ($R(2,0)$) \\ % 
-Romberg & \textbf{0.333333...} & \textbf{0.0} & Eksak pada $R(1,1)$ \\ % 
-Adaptif & \textbf{0.333333...} & \textbf{0.0} & Eksak (basis Simpson) \\ % 
-Gauss & \textbf{0.333333...} & \textbf{0.0} & Eksak pada $n=2$ titik \\ % 
+Ekstrapolasi & 0.333333... & 0.0 & Eksak (setara Simpson) \\ % 
+Romberg & 0.333333... & 0.0 & Eksak pada $R(1,1)$ \\ % 
+Adaptif & 0.333333... & 0.0 & Eksak (basis Simpson) \\ % 
+Gauss & 0.333333... & 0.0 & Eksak pada $n=2$ titik \\ % 
 \bottomrule % 
 \end{tabular} % 
 \end{table} % 
+% --- [AKHIR MODIFIKASI] ---
 
+% --- [MODIFIKASI ANALISIS KESIMPULAN DENGAN RICHARDSON] ---
 \subsection{Metode dengan Error Terkecil} % 
 \begin{itemize}
     \item \textbf{Untuk $f(x) = x^2$ (Polinomial Sederhana):} % 
-    Metode \textbf{Romberg}, \textbf{Integrasi Adaptif}, dan \textbf{Kuadratur Gauss} ($n \ge 2$) semuanya menghasilkan error nol (0.0) dan memberikan jawaban eksak. % 
-    Ini karena basis dari Romberg ($R(i,1)$) dan Adaptif adalah Aturan Simpson, yang eksak untuk polinomial derajat $\le 3$. % 
+    Metode \textbf{Ekstrapolasi Richardson}, \textbf{Romberg}, \textbf{Integrasi Adaptif}, dan \textbf{Kuadratur Gauss} ($n \ge 2$) semuanya menghasilkan error nol (0.0) dan memberikan jawaban eksak. % 
+    Ini karena Ekstrapolasi Richardson (dan juga basis dari Romberg $R(i,1)$ serta Integrasi Adaptif) secara matematis setara dengan Aturan Simpson, yang eksak untuk polinomial derajat $\le 3$. % 
     Kuadratur Gauss ($n=2$) juga eksak untuk polinomial derajat $\le 3$. % 
+    
     \item \textbf{Untuk $f(x) = \cos(x)$ (Fungsi Transendental):} % 
-    Metode \textbf{Integrasi Adaptif} dan \textbf{Kuadratur Gauss} ($n \ge 4$) adalah pemenangnya, keduanya menghasilkan error terkecil yang pada dasarnya dibatasi oleh presisi floating-point komputer ($\approx 10^{-16}$). % 
+    Di sini kita melihat progresi akurasi yang jelas: Aturan Trapesium ($10^{-2}$), diikuti oleh Ekstrapolasi Richardson ($10^{-4}$), lalu Integrasi Romberg ($10^{-6}$).
+    Namun, metode \textbf{Integrasi Adaptif} dan \textbf{Kuadratur Gauss} ($n \ge 4$) adalah pemenangnya, keduanya menghasilkan error terkecil yang pada dasarnya dibatasi oleh presisi floating-point komputer ($\approx 10^{-16}$). % 
     Integrasi Romberg jauh lebih baik daripada Trapesium dasar, tetapi akurasinya (untuk jumlah evaluasi fungsi yang sebanding) dikalahkan oleh efisiensi Integrasi Adaptif dan kekuatan Kuadratur Gauss. % 
 \end{itemize}
+% --- [AKHIR BLOK PENGGANTI] ---
 
 \end{document} % 
 % ======================================================
