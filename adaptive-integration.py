@@ -1,16 +1,12 @@
 import math
-
 PI = math.pi
-
-def f_1(x):
-    return math.cos(x)
 
 def quadpt_1(a, b):
     tol = 1e-10
     c = (a+b)/2
-    fa = f_1(a)
-    fb = f_1(b)
-    fc = f_1(c)
+    fa = math.cos(a)
+    fb = math.cos(b)
+    fc = math.cos(c)
     I, E = qstep_1(a, b, tol, fa, fc, fb)
     return I, E
 
@@ -18,8 +14,8 @@ def qstep_1(a, b, tol, fa, fc, fb):
     h1 = (b - a)/2
     h2 = h1/2
     c = (a + b)/2
-    fd = f_1((a + c)/2)
-    fe = f_1((c + b)/2)
+    fd = math.cos((a + c)/2)
+    fe = math.cos((c + b)/2)
     I1 = h1/3 * (fa + 4*fc + fb)
     I2 = h2/3 * (fa + 4*fd + 2*fc + 4*fe + fb)
 
@@ -32,16 +28,13 @@ def qstep_1(a, b, tol, fa, fc, fb):
         Ia, Ea = qstep_1(a, c, tol / 2, fa, fd, fc)
         Ib, Eb = qstep_1(c, b, tol / 2, fc, fe, fb)
         return Ia + Ib, Ea + Eb
-    
-def f_2(x):
-    return x**2
 
 def quadpt_2(a, b):
     tol = 1e-10
     c = (a+b)/2
-    fa = f_2(a)
-    fb = f_2(b)
-    fc = f_2(c)
+    fa = a**2
+    fb = b**2
+    fc = c**2
     I, E = qstep_2(a, b, tol, fa, fc, fb)
     return I, E
 
@@ -49,8 +42,8 @@ def qstep_2(a, b, tol, fa, fc, fb):
     h1 = (b - a)/2
     h2 = h1/2
     c = (a + b)/2
-    fd = f_2((a + c)/2)
-    fe = f_2((c + b)/2)
+    fd = ((a + c)/2)**2
+    fe = ((c + b)/2)**2
     I1 = h1/3 * (fa + 4*fc + fb)
     I2 = h2/3 * (fa + 4*fd + 2*fc + 4*fe + fb)
 
@@ -63,11 +56,3 @@ def qstep_2(a, b, tol, fa, fc, fb):
         Ia, Ea = qstep_2(a, c, tol / 2, fa, fd, fc)
         Ib, Eb = qstep_2(c, b, tol / 2, fc, fe, fb)
         return Ia + Ib, Ea + Eb
-
-if __name__ == "__main__":
-    I, E = quadpt_1(0, PI/2)
-    print(f"Aproximation first integral: {I}")
-    print(f"Estimated local error: {E}\n")
-    I, E = quadpt_2(0, 1)
-    print(f"Aproximation first integral: {I}")
-    print(f"Estimated local error: {E}\n")
